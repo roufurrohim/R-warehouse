@@ -4,9 +4,10 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  Button,
   TouchableOpacity,
 } from 'react-native';
+
+import Colors from './../components/Colors';
 
 const MasukanScreen = () => {
   const [form, setForm] = useState({
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
     width: 300,
     height: 45,
-    backgroundColor: '#32CD32',
+    backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 15,
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
     width: 300,
     height: 45,
-    backgroundColor: '#ff0000git',
+    backgroundColor: '#ff0000',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 15,

@@ -91,16 +91,20 @@ const TabButton = props => {
       onPress={onPress}
       activeOpacity={1}
       style={styles.container}>
-      <Animatable.View ref={viewRef} duration={1000} style={styles.container}>
+      <Animatable.View ref={viewRef} duration={300} style={styles.container}>
         <View style={styles.btn}>
-          <Animatable.View ref={circleRef} style={styles.circle} />
+          <Animatable.View
+            ref={circleRef}
+            duration={300}
+            style={styles.circle}
+          />
           <Icon
             type={item.type}
             name={item.icon}
             color={focused ? Colors.white : Colors.primary}
           />
         </View>
-        <Animatable.Text ref={textRef} style={styles.text}>
+        <Animatable.Text ref={textRef} duration={300} style={styles.text}>
           {item.label}
         </Animatable.Text>
       </Animatable.View>
