@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text } from "react-native";
 
-const InputForm = () => {
+const FlatListForm = () => {
   return (
     <View>
-      <Text>Input</Text>
+      <Text>FlatList</Text>
     </View>
   );
 };
 
-export default InputForm;
+export default FlatListForm;
