@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,11 +6,11 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
-} from 'react-native';
+} from "react-native";
 
 const MasukanScreen = () => {
   const [form, setForm] = useState({
-    nameItem: '',
+    nameItem: "",
   });
   return (
     <View style={styles.container}>
@@ -70,14 +70,14 @@ const MasukanScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     paddingTop: 30,
   },
   text: {
     fontSize: 30,
-    color: 'black',
-    fontWeight: 'bold',
+    color: "black",
+    fontWeight: "bold",
   },
   packName: {
     marginTop: 30,
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   labelName: {
     fontSize: 18,
-    color: 'black',
+    color: "black",
   },
   inputName: {
     height: 40,
@@ -100,31 +100,31 @@ const styles = StyleSheet.create({
     marginTop: 50,
     width: 300,
     height: 45,
-    backgroundColor: '#32CD32',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#32CD32",
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 15,
   },
   btnCancel: {
     marginTop: 50,
     width: 300,
     height: 45,
-    backgroundColor: '#ff0000git',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#ff0000",
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 15,
   },
   btnSave: {
-    display: 'flex',
-    color: 'white',
+    display: "flex",
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   textCancel: {
-    display: 'flex',
-    color: 'white',
+    display: "flex",
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 
