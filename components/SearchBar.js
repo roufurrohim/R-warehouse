@@ -14,11 +14,7 @@ const SearchBar = ({ ...rest }) => {
           color={Color.primary}
           style={styles.searchIcon}
         />
-        <TextInput
-          style={styles.searchBarInput}
-          onChange={() => {}}
-          {...rest}
-        />
+        <TextInput style={styles.searchBarInput} {...rest} />
       </View>
     </View>
   );
@@ -52,5 +48,4 @@ const styles = StyleSheet.create({
   searchBarInput: {
     fontSize: 16,
   },
-  listContainer: {},
 });
