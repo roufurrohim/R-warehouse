@@ -14,6 +14,15 @@ import Icon, { Icons } from "./../components/Icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen = () => {
+  useEffect(() => {
+    AsyncStorage.getItem("Database Catatan Barang").then(value => {
+      if (value == null) {
+        AsyncStorage.setItem("Database Catatan Barang", "[]");
+        AsyncStorage.setItem("Counter", "1");
+      }
+      // alert(value);
+    });
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Color.primary} />
