@@ -11,6 +11,7 @@ import {
   Modal,
   Pressable,
   Alert,
+  StatusBar,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {windowWidth} from './../components/Dimentions';
@@ -137,6 +138,7 @@ const KeluaranScreen = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor={Color.primary} />
       <SearchBar
         placeholder="Masukkan nama barang"
         onChangeText={value => {
