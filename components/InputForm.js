@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
+import Color from "./../components/Colors";
 
 const InputForm = ({ label, ...rest }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -35,12 +36,12 @@ const styles = StyleSheet.create({
     height: 40,
     width: 320,
     borderBottomWidth: 1,
-    borderColor: "black",
+    borderColor: "#999",
   },
   inputNameFocused: {
     height: 40,
     width: 320,
     borderBottomWidth: 1,
-    borderColor: "blue",
+    borderColor: Color.primary,
   },
 });
