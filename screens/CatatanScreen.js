@@ -17,7 +17,7 @@ const CatatanScreen = () => {
     var database = await AsyncStorage.getItem("Database Catatan Barang");
     databaseJson = JSON.parse(database);
     setData(databaseJson);
-    console.log(databaseJson);
+    // console.log(databaseJson);
   };
 
   const filterData = () => {

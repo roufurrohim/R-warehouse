@@ -8,79 +8,15 @@ import {
 } from "react-native";
 import { windowWidth, windowHeight } from "./../components/Dimentions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import Colors from "./../components/Colors";
+import InputForm from "./../components/InputForm";
 
 const MasukanScreen = () => {
-  const [form, setForm] = useState({
-    nameItem: "",
-  });
+  // const [form, setForm] = useState({
+  //   nameItem: "",
+  // });
 
-  var data = [
-    {
-      nama: "Dunkin' Donuts",
-      value: "Dunkin' Donuts",
-      key: "1",
-      harga: 5000,
-      jumlah: 14,
-    },
-    {
-      nama: "Soprole",
-      value: "Soprole",
-      key: "2",
-      harga: 6000,
-      jumlah: 3,
-    },
-    {
-      nama: "Nutella",
-      value: "Nutella",
-      key: "3",
-      harga: 4000,
-      jumlah: 1,
-    },
-    {
-      nama: "Kinder",
-      value: "Kinder",
-      key: "4",
-      harga: 3000,
-      jumlah: 10,
-    },
-    {
-      nama: "Subway",
-      value: "Subway",
-      key: "5",
-      harga: 15000,
-      jumlah: 21,
-    },
-    {
-      nama: "Vitta Foods",
-      value: "Vitta Foods",
-      key: "6",
-      harga: 12000,
-      jumlah: 11,
-    },
-    {
-      nama: "KFC",
-      value: "KFC",
-      key: "7",
-      harga: 15000,
-      jumlah: 6,
-    },
-    {
-      nama: "Wendy's",
-      value: "Wendy's",
-      key: "8",
-      harga: 1000,
-      jumlah: 9,
-    },
-    {
-      nama: "Burger King",
-      value: "Burger King",
-      key: "9",
-      harga: 9000,
-      jumlah: 3,
-    },
-  ];
+  var data = [];
 
   const tulisData = async () => {
     try {
@@ -109,38 +45,11 @@ const MasukanScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Input Data</Text>
-      <View style={styles.packName}>
-        <Text style={styles.labelName}>Name:</Text>
-        <TextInput
-          style={styles.inputName}
-          value={form.nameItem}
-          placeholder="Input Name Item"
-        />
-      </View>
-      <View style={styles.packType}>
-        <Text style={styles.labelName}>Type:</Text>
-        <TextInput
-          style={styles.inputName}
-          value={form.nameItem}
-          placeholder="Input Name Type"
-        />
-      </View>
-      <View style={styles.packType}>
-        <Text style={styles.labelName}>Quantity:</Text>
-        <TextInput
-          style={styles.inputName}
-          value={form.nameItem}
-          placeholder="Input Name Quantity"
-        />
-      </View>
-      <View style={styles.packType}>
-        <Text style={styles.labelName}>Price:</Text>
-        <TextInput
-          style={styles.inputName}
-          value={form.nameItem}
-          placeholder="Input Name Price"
-        />
-      </View>
+      <InputForm label="ID Barang:" value="1" editable={false} />
+      <InputForm label="Nama Barang:" placeholder="Masukkan Nama Barang" />
+      <InputForm label="Tipe Barang:" placeholder="Masukkan Tipe Barang" />
+      <InputForm label="Jumlah Barang:" placeholder="Masukkan Jumlah Barang" />
+      <InputForm label="Harga Barang:" placeholder="Masukkan Harga Barang" />
       <TouchableOpacity
         style={styles.fixToText}
         onPress={() => {
@@ -176,23 +85,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: "black",
     fontWeight: "bold",
-  },
-  packName: {
-    marginTop: 30,
-    marginBottom: 20,
-  },
-  packType: {
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  labelName: {
-    fontSize: 18,
-    color: "black",
-  },
-  inputName: {
-    height: 40,
-    width: 320,
-    borderBottomWidth: 1,
   },
   fixToText: {
     marginTop: 50,
