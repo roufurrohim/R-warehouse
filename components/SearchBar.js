@@ -2,6 +2,7 @@ import React from 'react';
 import {View, StyleSheet, TextInput} from 'react-native';
 import Icon, {Icons} from './../components/Icons';
 import Color from './../components/Colors';
+import {windowWidth} from './../components/Dimentions';
 
 const SearchBar = ({...rest}) => {
   return (
