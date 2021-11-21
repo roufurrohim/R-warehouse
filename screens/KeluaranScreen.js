@@ -125,15 +125,47 @@ const KeluaranScreen = () => {
     setDataCart([]);
   };
 
-  const bayar = () => {
-    const newItem = [...store];
-    const dataDb = store.map(e => {
-      const ind = dataCart.findIndex(item => e.key === item.key);
-      return ind;
-    });
+  const writeData = async () => {
+    await AsyncStorage.setItem(
+      "Database Catatan Barang",
+      JSON.stringify(store)
+    );
+    console.log("sampai write data");
+  };
 
-    newItem[dataDb].jumlah = newItem[dataDb].jumlah - dataCart[dataDb].jumlah;
-    console.log(newItem);
+  const updateData = (id, jumlah) => {
+    // ganti data
+    var indexKe = parseInt(id) - 1;
+    // kirim database
+    var data = store;
+    var oldData = data[indexKe];
+    var jumlah = parseInt(oldData["jumlah"]) - parseInt(jumlah);
+    data[indexKe] = {
+      key: oldData["key"],
+      value: oldData["value"],
+      tipe: oldData["tipe"],
+      jumlah: jumlah.toString(),
+      harga: oldData["harga"],
+    };
+
+    setStore(data);
+    // console.log(data);
+    writeData();
+  };
+
+  const bayar = () => {
+    // const newItem = [...store];
+    // const dataDb = store.map(e => {
+    //   const ind = dataCart.findIndex(item => e.key === item.key);
+    //   return ind;
+    // });
+
+    // newItem[dataDb].jumlah = newItem[dataDb].jumlah - dataCart[dataDb].jumlah;
+    // console.log(newItem);
+    dataCart.forEach(item => {
+      updateData(item["key"], item["jumlah"]);
+    });
+    setModalVisible(!modalVisible);
   };
 
   // format money
@@ -286,6 +318,9 @@ const KeluaranScreen = () => {
                 <Pressable
                   style={[styles.button, styles.buttonClose]}
                   onPress={() => setModalVisible(!modalVisible)}
+                  // onPress={() => {
+                  //   updateData();
+                  // }}
                 >
                   <Text style={styles.textStyle}>Cancel</Text>
                 </Pressable>
