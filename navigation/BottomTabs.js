@@ -32,14 +32,14 @@ const circle2 = { 0: { scale: 1 }, 1: { scale: 0 } };
 const TabArr = [
   {
     route: "Masukan",
-    label: "Masukan",
+    label: "Input",
     type: Icons.Feather,
     icon: "shopping-bag",
     component: MasukanScreen,
   },
   {
     route: "Keluaran",
-    label: "Keluaran",
+    label: "Transaksi",
     type: Icons.Feather,
     icon: "shopping-cart",
     component: KeluaranScreen,
@@ -60,7 +60,7 @@ const TabArr = [
   },
   {
     route: "Barang Habis",
-    label: "Barang Habis",
+    label: "Pencarian",
     type: Icons.Feather,
     icon: "alert-circle",
     component: BarangHabisScreen,

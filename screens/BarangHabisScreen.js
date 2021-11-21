@@ -134,12 +134,9 @@ const styles = StyleSheet.create({
   listHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    // left: 20,
-    // backgroundColor: "yellow",
   },
   listHeaderText: {
     fontSize: 20,
-    // backgroundColor: "red",
   },
   sectionHeaderContainer: {
     backgroundColor: "#bbb",

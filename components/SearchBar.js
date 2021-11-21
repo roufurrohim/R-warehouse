@@ -47,5 +47,6 @@ const styles = StyleSheet.create({
   },
   searchBarInput: {
     fontSize: 16,
+    width: windowWidth - 100,
   },
 });

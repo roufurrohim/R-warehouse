@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -6,84 +6,160 @@ import {
   TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
-} from 'react-native';
-import {windowWidth, windowHeight} from './../components/Dimentions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Colors from './../components/Colors';
-import InputForm from './../components/InputForm';
-import ButtonForm from './../components/ButtonForm';
+  StatusBar,
+  Alert,
+} from "react-native";
+import { windowWidth, windowHeight } from "./../components/Dimentions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Color from "./../components/Colors";
+import InputForm from "./../components/InputForm";
+import ButtonForm from "./../components/ButtonForm";
 
 const MasukanScreen = () => {
-  const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
-  // {"harga": 5000, "jumlah": 14, "key": "1", "nama": "Dunkin' Donuts", "value": "Dunkin' Donuts", tipe: "makanan"}
   const [form, setForm] = useState({
-    value: '',
-    tipe: '',
-    jumlah: '',
-    harga: '',
+    key: "",
+    value: "",
+    tipe: "",
+    jumlah: "",
+    harga: "",
   });
+  const [semuaData, setSemuaData] = useState([]);
+  const notInitialRender = useRef(false);
 
-  var data = [];
-  console.log(form);
-  const tulisData = async () => {
+  const alertModal = (title, message) =>
+    Alert.alert(title, message, [
+      { text: "OK", onPress: () => console.log("OK Pressed") },
+    ]);
+
+  const cekData = () => {
+    console.log(semuaData);
+  };
+
+  const clearData = async () => {
     try {
-      await AsyncStorage.setItem(
-        'Database Catatan Barang',
-        JSON.stringify(data),
-      );
-    } catch (error) {
-      // Error saving data
-      console.log(error);
+      var counter = await AsyncStorage.getItem("Counter");
+      var nullData = {
+        key: counter,
+        value: "",
+        tipe: "",
+        jumlah: "",
+        harga: "",
+      };
+    } catch (e) {
+      console.log(e);
     }
-    console.log('tulis data selesai');
+    setForm(nullData);
+  };
+
+  const writeData = async () => {
+    await AsyncStorage.setItem(
+      "Database Catatan Barang",
+      JSON.stringify(semuaData)
+    );
+  };
+
+  const counter = async () => {
+    var counter = parseInt(form["key"]) + 1;
+    await AsyncStorage.setItem("Counter", counter.toString());
+  };
+
+  const tulisData = () => {
+    setSemuaData([...semuaData, form]);
+    writeData();
+    counter();
+
+    alertModal("", "Input Data berhasil");
+    clearData();
   };
 
   const readData = async () => {
-    let data;
     try {
-      data = await AsyncStorage.getItem('Database Catatan Barang');
+      var data = await AsyncStorage.getItem("Database Catatan Barang");
+      console.log(data);
     } catch (error) {
       // Error saving data
       console.log(error);
     }
-    console.log(JSON.parse(data));
+    setSemuaData(JSON.parse(data));
   };
+
+  useEffect(
+    () => {
+      if (notInitialRender.current) {
+        writeData();
+        console.log("masuk useEffect");
+      } else {
+        notInitialRender.current = true;
+      }
+    },
+    [semuaData]
+  );
+
+  useEffect(() => {
+    async function fetchData() {
+      // ambil data counter
+      try {
+        // await AsyncStorage.setItem("Database Catatan Barang", "[]");
+        // await AsyncStorage.setItem("Counter", "1");
+        var counter = await AsyncStorage.getItem("Counter");
+        setForm({ ...form, key: counter });
+      } catch (e) {
+        console.log(e);
+      }
+      // ambil semua data gudang
+      readData();
+    }
+    fetchData();
+  }, []);
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView
-        behavior="position"
-        keyboardVerticalOffset={keyboardVerticalOffset}>
+      <StatusBar backgroundColor={Color.primary} />
+      <KeyboardAvoidingView behavior="position">
         <Text style={styles.text}>Input Data</Text>
 
-        <InputForm label="ID Barang:" value="1" editable={false} />
+        <InputForm label="ID Barang:" value={form.key} editable={false} />
         <InputForm
           label="Nama Barang:"
+          value={form["value"]}
           placeholder="Masukkan Nama Barang"
-          onChangeText={value => setForm({...form, value: value})}
+          onChangeText={value => setForm({ ...form, value: value })}
         />
         <InputForm
           label="Tipe Barang:"
+          value={form["tipe"]}
           placeholder="Masukkan Tipe Barang"
-          onChangeText={value => setForm({...form, tipe: value})}
+          onChangeText={value => setForm({ ...form, tipe: value })}
         />
         <InputForm
           label="Jumlah Barang:"
+          value={form["jumlah"]}
           placeholder="Masukkan Jumlah Barang Per Karton"
-          onChangeText={value => setForm({...form, jumlah: value})}
-          keyboardType="numeric"
+          onChangeText={value => setForm({ ...form, jumlah: value })}
+          keyboardType="number-pad"
         />
         <InputForm
           label="Harga Barang:"
+          value={form["harga"]}
           placeholder="Masukkan Harga Barang"
-          onChangeText={value => setForm({...form, harga: value})}
+          onChangeText={value => setForm({ ...form, harga: value })}
           keyboardType="numeric"
         />
 
-        <View style={{height: 15}} />
+        <View style={{ height: 15 }} />
 
-        <ButtonForm label="Simpan" />
-        <ButtonForm label="Cancel" />
+        <ButtonForm
+          label="Simpan"
+          onPress={() => {
+            tulisData();
+          }}
+        />
+        <ButtonForm
+          label="Cancel"
+          onPress={() => {
+            clearData();
+          }}
+        />
       </KeyboardAvoidingView>
     </View>
   );
@@ -91,15 +167,16 @@ const MasukanScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     paddingTop: 30,
   },
   text: {
     fontSize: 30,
-    color: 'black',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "black",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
