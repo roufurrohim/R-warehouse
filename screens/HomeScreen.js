@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
-import {useEffect, useState} from 'react';
+import React from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,10 +9,11 @@ import {
   StatusBar,
   ScrollView,
   SafeAreaView,
-} from 'react-native';
-import {windowWidth, windowHeight} from './../components/Dimentions';
-import Color from './../components/Colors';
-import Icon, {Icons} from './../components/Icons';
+} from "react-native";
+import { windowWidth, windowHeight } from "./../components/Dimentions";
+import Color from "./../components/Colors";
+import Icon, { Icons } from "./../components/Icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen = () => {
   useEffect(() => {
@@ -32,15 +33,15 @@ const HomeScreen = () => {
           <Text style={styles.boxTitle}>Barang Masuk</Text>
           <View
             style={{
-              width: '74%',
+              width: "74%",
               height: 3,
-              backgroundColor: 'white',
+              backgroundColor: "white",
               borderRadius: 3,
             }}
           />
           <Icon
             type={Icons.Feather}
-            name={'shopping-bag'}
+            name={"shopping-bag"}
             color={Color.black}
             style={styles.boxIcon}
           />
@@ -53,15 +54,15 @@ const HomeScreen = () => {
           <Text style={styles.boxTitle}>Barang Keluar</Text>
           <View
             style={{
-              width: '72%',
+              width: "72%",
               height: 3,
-              backgroundColor: 'white',
+              backgroundColor: "white",
               borderRadius: 3,
             }}
           />
           <Icon
             type={Icons.Feather}
-            name={'shopping-cart'}
+            name={"shopping-cart"}
             color={Color.black}
             style={styles.boxIcon}
           />
@@ -74,15 +75,15 @@ const HomeScreen = () => {
           <Text style={styles.boxTitle}>Barang Tersedia</Text>
           <View
             style={{
-              width: '84%',
+              width: "84%",
               height: 3,
-              backgroundColor: 'white',
+              backgroundColor: "white",
               borderRadius: 3,
             }}
           />
           <Icon
             type={Icons.Feather}
-            name={'archive'}
+            name={"archive"}
             color={Color.black}
             style={styles.boxIcon}
           />
@@ -94,22 +95,22 @@ const HomeScreen = () => {
           <Text style={styles.boxTitle}>Hampir Habis</Text>
           <View
             style={{
-              width: '71%',
+              width: "71%",
               height: 3,
-              backgroundColor: 'white',
+              backgroundColor: "white",
               borderRadius: 3,
             }}
           />
           <Icon
             type={Icons.Feather}
-            name={'alert-circle'}
+            name={"alert-circle"}
             color={Color.black}
             style={styles.boxIcon}
           />
           <Text style={styles.boxText}>Barang yang hampir habis sebanyak:</Text>
           <Text style={styles.boxJumlah}>20 barang</Text>
         </View>
-        <View style={{height: 30}} />
+        <View style={{ height: 30 }} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -120,19 +121,19 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     // justifyContent: "center",
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     padding: 7.5,
   },
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   box: {
     width: windowWidth - 33,
     height: windowWidth - 33,
     // alignItems: "center",
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 30,
     margin: 7.5,
     borderRadius: 16,
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
   boxTitle: {
     fontSize: 40,
     // fontWeight: "bold",
-    color: '#fff',
+    color: "#fff",
   },
   scrollView: {
     marginBottom: 40,
@@ -149,14 +150,14 @@ const styles = StyleSheet.create({
   boxIcon: {
     fontSize: 100,
     margin: 30,
-    color: '#fff',
+    color: "#fff",
   },
   boxText: {
     fontSize: 20,
-    color: '#fff',
+    color: "#fff",
   },
   boxJumlah: {
     fontSize: 40,
-    color: '#fff',
+    color: "#fff",
   },
 });
