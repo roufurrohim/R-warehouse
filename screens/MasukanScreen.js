@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StatusBar,
   Alert,
+  Keyboard,
 } from "react-native";
 import { windowWidth, windowHeight } from "./../components/Dimentions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -15,18 +16,18 @@ import InputForm from "./../components/InputForm";
 import ButtonForm from "./../components/ButtonForm";
 
 const MasukanScreen = () => {
-  const [warning, setWarning] = useState("Harus Input Nama");
-  const [jumlah, setJumlah] = useState(0);
+  const [warning, setWarning] = useState("Harus Memasukkan Nama Barang");
   const [status, setStatus] = useState(false);
   const [dataSearch, setDataSearch] = useState([]);
   const [form, setForm] = useState({
     key: "",
     value: "",
     tipe: "",
-    jumlah: 0,
+    jumlah: "",
     harga: "",
   });
   const [semuaData, setSemuaData] = useState([]);
+  const [isDataBaru, setIsDataBaru] = useState(true);
   const notInitialRender = useRef(false);
 
   const alertModal = (title, message) =>
@@ -34,8 +35,17 @@ const MasukanScreen = () => {
       { text: "OK", onPress: () => console.log("OK Pressed") },
     ]);
 
-  const cekData = () => {
-    console.log(semuaData);
+  const validation = () => {
+    if (
+      form.value != "" &&
+      form.tipe != "" &&
+      form.jumlah != "" &&
+      form.harga != ""
+    ) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   const clearData = async () => {
@@ -45,13 +55,14 @@ const MasukanScreen = () => {
         key: counter,
         value: "",
         tipe: "",
-        jumlah: 0,
+        jumlah: "",
         harga: "",
       };
     } catch (e) {
       console.log(e);
     }
     setForm(nullData);
+    setIsDataBaru(true);
   };
 
   const writeData = async () => {
@@ -59,6 +70,7 @@ const MasukanScreen = () => {
       "Database Catatan Barang",
       JSON.stringify(semuaData)
     );
+    console.log("sampai write data");
   };
 
   const counter = async () => {
@@ -66,13 +78,39 @@ const MasukanScreen = () => {
     await AsyncStorage.setItem("Counter", counter.toString());
   };
 
-  const tulisData = () => {
-    setSemuaData([...semuaData, form]);
-    writeData();
-    counter();
+  const updateData = () => {
+    // ganti data
+    var indexKe = parseInt(form["key"]) - 1;
+    // kirim database
+    var data = semuaData;
+    var jumlah =
+      parseInt(semuaData[indexKe]["jumlah"]) + parseInt(form["jumlah"]);
+    data[indexKe] = {
+      key: form["key"],
+      value: form["value"],
+      tipe: form["tipe"],
+      jumlah: jumlah.toString(),
+      harga: form["harga"],
+    };
 
-    alertModal("", "Input Data berhasil");
-    clearData();
+    setSemuaData(data);
+    console.log(data);
+  };
+
+  const tulisData = () => {
+    if (validation()) {
+      if (isDataBaru) {
+        setSemuaData([...semuaData, form]);
+        counter();
+      } else {
+        updateData();
+      }
+
+      alertModal("", "Input Data berhasil");
+      clearData();
+    } else {
+      alertModal("", "Mohon Masukkan Data Secara Lengkap");
+    }
   };
 
   const changeName = (searchText, datas) => {
@@ -86,41 +124,39 @@ const MasukanScreen = () => {
         return itemData.includes(textData);
       });
       setStatus(newData.length !== 0 ? true : false);
-      console.log(newData);
       setDataSearch([...newData]);
     } else {
       setStatus(false);
     }
   };
 
-  const handleChoose = id => {
-    const findMenu = dataSearch.find(e => {
-      if (e.key === id) {
-        return e;
-      }
+  const handleChoose = item => {
+    Keyboard.dismiss();
+    setForm({
+      key: item.key,
+      value: item.value,
+      tipe: item.tipe,
+      jumlah: "",
+      harga: item.harga,
     });
-    setForm(findMenu);
     setStatus(false);
+    setIsDataBaru(false);
   };
-  console.log(form);
-  // eslint-disable-next-line no-unused-vars
+
   const readData = async () => {
     try {
       var data = await AsyncStorage.getItem("Database Catatan Barang");
-      // console.log(data);
     } catch (error) {
       // Error saving data
       console.log(error);
     }
     setSemuaData(JSON.parse(data));
-    setDataSearch(JSON.parse(data));
   };
 
   useEffect(
     () => {
       if (notInitialRender.current) {
         writeData();
-        console.log("masuk useEffect");
       } else {
         notInitialRender.current = true;
       }
@@ -154,10 +190,9 @@ const MasukanScreen = () => {
         <InputForm label="ID Barang:" value={form.key} editable={false} />
         <InputForm
           label="Nama Barang:"
-          value={form["value"]}
           placeholder="Masukkan Nama Barang"
           value={form.value}
-          onChangeText={event => changeName(event, dataSearch)}
+          onChangeText={event => changeName(event, semuaData)}
         />
         <Text style={styles.wrn}>
           {form.value !== "" ? "" : `*${warning}`}
@@ -167,16 +202,16 @@ const MasukanScreen = () => {
             <TouchableOpacity
               key={i}
               style={styles.cardRes}
-              onPress={() => handleChoose(e.key)}
+              onPress={() => handleChoose(e)}
             >
               <Text>
                 {e.value}
               </Text>
               <Text>
-                Price: {e.harga}
+                Harga: {e.harga}
               </Text>
               <Text>
-                Qty: {e.jumlah}
+                Sisa: {e.jumlah}
               </Text>
             </TouchableOpacity>
           )}
@@ -191,13 +226,14 @@ const MasukanScreen = () => {
         <InputForm
           label="Jumlah Barang:"
           placeholder="Masukkan Jumlah Per Karton"
-          onChangeText={value => setJumlah(parseInt(value))}
+          value={form.jumlah}
+          onChangeText={value => setForm({ ...form, jumlah: value })}
           keyboardType="numeric"
         />
         <InputForm
           label="Harga Barang:"
           placeholder="Masukkan Harga Per Karton"
-          value={form.harga.toString()}
+          value={form.harga}
           onChangeText={value => setForm({ ...form, harga: value })}
           keyboardType="numeric"
         />
@@ -255,6 +291,7 @@ const styles = StyleSheet.create({
   },
   wrn: {
     color: "red",
+    marginLeft: 15,
   },
 });
 
