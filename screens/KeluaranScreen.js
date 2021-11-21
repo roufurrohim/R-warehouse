@@ -1,24 +1,28 @@
+/* eslint-disable no-shadow */
+/* eslint-disable radix */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
-  TextInput,
   TouchableOpacity,
+  Modal,
+  Pressable,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {windowWidth, windowHeight} from './../components/Dimentions';
-import Icon, {Icons} from './../components/Icons';
+import {windowWidth} from './../components/Dimentions';
 import Color from './../components/Colors';
 import SearchBar from './../components/SearchBar';
 
 const KeluaranScreen = () => {
-  const [text, setText] = useState('');
   const [store, setStore] = useState([]);
   const [dataSearch, setDataSearch] = useState([]);
   const [dataCart, setDataCart] = useState([]);
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const storedata = async () => {
     try {
@@ -35,6 +39,18 @@ const KeluaranScreen = () => {
   useEffect(() => {
     storedata();
   }, []);
+
+  const {totalPrice} = useMemo(() => {
+    return dataCart.reduce(
+      ({totalQuantity, totalPrice}, {harga, jumlah}) => ({
+        totalPrice: totalPrice + parseInt(jumlah) * parseInt(harga),
+      }),
+      {
+        totalQuantity: 0,
+        totalPrice: 0,
+      },
+    );
+  }, [dataCart]);
 
   const checkdatacart = id => {
     const finddata = dataCart.find(e => {
@@ -64,7 +80,7 @@ const KeluaranScreen = () => {
 
   const handleChoose = id => {
     const findMenu = store.find(e => {
-      if (e.key === id.key) {
+      if (e.key === id) {
         return e;
       }
     });
@@ -97,6 +113,17 @@ const KeluaranScreen = () => {
 
   const handleCancel = () => {
     setDataCart([]);
+  };
+
+  const bayar = () => {
+    const newItem = [...store];
+    const dataDb = store.map(e => {
+      const ind = dataCart.findIndex(item => e.key === item.key);
+      return ind;
+    });
+
+    newItem[dataDb].jumlah = newItem[dataDb].jumlah - dataCart[dataDb].jumlah;
+    console.log(newItem);
   };
 
   // format money
@@ -171,18 +198,74 @@ const KeluaranScreen = () => {
           <Text style={styles.titleTotal}>Total</Text>
         </View>
         <View>
-          <Text style={styles.titleTotal}>Rp. {money(24546567)}</Text>
+          <Text style={styles.titleTotal}>Rp. {money(totalPrice)}</Text>
         </View>
       </View>
       <TouchableOpacity
         style={styles.fixToText}
-        // onPress={() => Alert.alert('Right button pressed')}
-      >
+        onPress={() => setModalVisible(true)}>
         <Text style={styles.btnSave}>Checkout</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.btnCancel} onPress={() => handleCancel()}>
-        <Text style={styles.textCancel}>Cancel</Text>
+        <Text style={styles.textCancel}>Batal</Text>
       </TouchableOpacity>
+      <View style={styles.centeredView}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.titleModal}>Checkout</Text>
+              <View style={styles.bodyModal}>
+                {dataCart.map((e, i) => (
+                  <TouchableOpacity
+                    key={i}
+                    style={styles.cardRes}
+                    onPress={() => handleChoose(e.key)}>
+                    <Text
+                      style={{
+                        fontWeight: 'bold',
+                        color: '#000',
+                      }}>
+                      {e.value}
+                    </Text>
+                    <Text>Jumlah: {e.jumlah}</Text>
+                    <Text>Harga: Rp. {money(e.harga)}</Text>
+                  </TouchableOpacity>
+                ))}
+                <View style={styles.packTotal}>
+                  <View>
+                    <Text style={styles.titleTotal}>Total</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.titleTotal}>
+                      Rp. {money(totalPrice)}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.btnModal}>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}>
+                  <Text style={styles.textStyle}>Cancel</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => bayar()}>
+                  <Text style={styles.textStyle}>Bayar</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
     </View>
   );
 };
@@ -275,8 +358,10 @@ const styles = StyleSheet.create({
   packTotal: {
     width: 280,
     marginTop: 25,
+    paddingTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    borderTopWidth: 1,
   },
   titleTotal: {
     fontSize: 20,
@@ -313,6 +398,64 @@ const styles = StyleSheet.create({
     color: Color.primary,
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: -100,
+  },
+  modalView: {
+    width: '90%',
+    height: 'auto',
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 10,
+    // alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  titleModal: {
+    fontSize: 24,
+    color: '#000',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  bodyModal: {
+    justifyContent: 'center',
+    marginTop: 20,
+    marginHorizontal: 20,
+  },
+  button: {
+    borderRadius: 20,
+    width: '40%',
+    padding: 10,
+    elevation: 2,
+  },
+  buttonClose: {
+    backgroundColor: Color.primary,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  btnModal: {
+    flexDirection: 'row',
+    width: '100%',
+    marginVertical: 20,
+    justifyContent: 'space-around',
   },
 });
 
