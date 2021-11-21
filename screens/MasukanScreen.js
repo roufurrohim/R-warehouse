@@ -94,7 +94,8 @@ const MasukanScreen = () => {
     };
 
     setSemuaData(data);
-    console.log(data);
+    console.log(semuaData);
+    writeData();
   };
 
   const tulisData = () => {
