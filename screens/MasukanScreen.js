@@ -3,9 +3,8 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
-  TouchableOpacity,
   KeyboardAvoidingView,
+  TouchableOpacity,
   StatusBar,
   Alert,
 } from "react-native";
@@ -16,11 +15,15 @@ import InputForm from "./../components/InputForm";
 import ButtonForm from "./../components/ButtonForm";
 
 const MasukanScreen = () => {
+  const [warning, setWarning] = useState("Harus Input Nama");
+  const [jumlah, setJumlah] = useState(0);
+  const [status, setStatus] = useState(false);
+  const [dataSearch, setDataSearch] = useState([]);
   const [form, setForm] = useState({
     key: "",
     value: "",
     tipe: "",
-    jumlah: "",
+    jumlah: 0,
     harga: "",
   });
   const [semuaData, setSemuaData] = useState([]);
@@ -42,7 +45,7 @@ const MasukanScreen = () => {
         key: counter,
         value: "",
         tipe: "",
-        jumlah: "",
+        jumlah: 0,
         harga: "",
       };
     } catch (e) {
@@ -72,15 +75,45 @@ const MasukanScreen = () => {
     clearData();
   };
 
+  const changeName = (searchText, datas) => {
+    setForm({ ...form, value: searchText });
+
+    let newData = [];
+    if (searchText !== "") {
+      newData = datas.filter(function(item) {
+        const itemData = item.value.toUpperCase();
+        const textData = searchText.toUpperCase();
+        return itemData.includes(textData);
+      });
+      setStatus(newData.length !== 0 ? true : false);
+      console.log(newData);
+      setDataSearch([...newData]);
+    } else {
+      setStatus(false);
+    }
+  };
+
+  const handleChoose = id => {
+    const findMenu = dataSearch.find(e => {
+      if (e.key === id) {
+        return e;
+      }
+    });
+    setForm(findMenu);
+    setStatus(false);
+  };
+  console.log(form);
+  // eslint-disable-next-line no-unused-vars
   const readData = async () => {
     try {
       var data = await AsyncStorage.getItem("Database Catatan Barang");
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       // Error saving data
       console.log(error);
     }
     setSemuaData(JSON.parse(data));
+    setDataSearch(JSON.parse(data));
   };
 
   useEffect(
@@ -123,25 +156,48 @@ const MasukanScreen = () => {
           label="Nama Barang:"
           value={form["value"]}
           placeholder="Masukkan Nama Barang"
-          onChangeText={value => setForm({ ...form, value: value })}
+          value={form.value}
+          onChangeText={event => changeName(event, dataSearch)}
         />
+        <Text style={styles.wrn}>
+          {form.value !== "" ? "" : `*${warning}`}
+        </Text>
+        <View style={!status ? styles.resNone : styles.resSearch}>
+          {dataSearch.map((e, i) =>
+            <TouchableOpacity
+              key={i}
+              style={styles.cardRes}
+              onPress={() => handleChoose(e.key)}
+            >
+              <Text>
+                {e.value}
+              </Text>
+              <Text>
+                Price: {e.harga}
+              </Text>
+              <Text>
+                Qty: {e.jumlah}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
         <InputForm
           label="Tipe Barang:"
           value={form["tipe"]}
           placeholder="Masukkan Tipe Barang"
+          value={form.tipe}
           onChangeText={value => setForm({ ...form, tipe: value })}
         />
         <InputForm
           label="Jumlah Barang:"
-          value={form["jumlah"]}
-          placeholder="Masukkan Jumlah Barang Per Karton"
-          onChangeText={value => setForm({ ...form, jumlah: value })}
-          keyboardType="number-pad"
+          placeholder="Masukkan Jumlah Per Karton"
+          onChangeText={value => setJumlah(parseInt(value))}
+          keyboardType="numeric"
         />
         <InputForm
           label="Harga Barang:"
-          value={form["harga"]}
-          placeholder="Masukkan Harga Barang"
+          placeholder="Masukkan Harga Per Karton"
+          value={form.harga.toString()}
           onChangeText={value => setForm({ ...form, harga: value })}
           keyboardType="numeric"
         />
@@ -172,11 +228,33 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingTop: 30,
   },
+  resNone: {
+    display: "none",
+  },
+  resSearch: {
+    display: "flex",
+    width: "94.8%",
+    height: "auto",
+    position: "absolute",
+    marginTop: 195,
+    zIndex: 1,
+    padding: 20,
+    backgroundColor: "white",
+  },
+  cardRes: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginVertical: 8,
+  },
   text: {
     fontSize: 30,
     color: "black",
     fontWeight: "bold",
     textAlign: "center",
+  },
+  wrn: {
+    color: "red",
   },
 });
 

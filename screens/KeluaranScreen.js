@@ -18,47 +18,14 @@ const KeluaranScreen = () => {
   const [text, setText] = useState("");
   const [store, setStore] = useState([]);
   const [dataSearch, setDataSearch] = useState([]);
-  const data = [
-    {
-      id: 1,
-      name: "KFC",
-      price: 100,
-      qty: 1,
-    },
-    {
-      id: 2,
-      name: "Taco Bell",
-      price: 1000,
-      qty: 1,
-    },
-    {
-      id: 3,
-      name: "Andy Capp's fries",
-      price: 100,
-      qty: 1,
-    },
-    {
-      id: 4,
-      name: "Andy Capp's fries",
-      price: 100,
-      qty: 1,
-    },
-  ];
-  const [dataCart, setDataCart] = useState([
-    {
-      id: 1,
-      name: "KFC",
-      price: 100,
-      qty: 1,
-    },
-  ]);
+  const [dataCart, setDataCart] = useState([]);
 
   const storedata = async () => {
     try {
-      const dts = await AsyncStorage.getItem("database catatan barang");
+      const dts = await AsyncStorage.getItem("Database Catatan Barang");
       if (dts !== null) {
         let dbs = JSON.parse(dts);
-        setStore(dbs);
+        setStore([dbs]);
       }
     } catch (error) {
       console.log(error);
@@ -71,44 +38,46 @@ const KeluaranScreen = () => {
 
   const checkdatacart = id => {
     const finddata = dataCart.find(e => {
-      if (e.id === id) {
+      if (e.key === id) {
         return e;
       }
     });
     return finddata;
   };
 
-  const addQty = id => {
-    const idx = dataCart.findIndex(x => x.id === id);
-    // dataCart[i].qty += 1;
-    if (idx !== -1) {
-      return dataCart.map((item, i) => ({
-        ...item,
-        item1: {
-          ...item.item,
-          qty: item.item.qty + (idx === i ? 1 : 0),
-        },
-      }));
+  const addQty = index => {
+    const newItem = [...dataCart];
+    newItem[index].jumlah++;
+    setDataCart(newItem);
+  };
+
+  const decQty = index => {
+    const newItem = [...dataCart];
+    if (newItem[index].jumlah <= 1) {
+      newItem.splice([index], 1);
+      setDataCart(newItem);
     } else {
-      return setDataCart([...dataCart]);
+      newItem[index].jumlah--;
+      setDataCart(newItem);
     }
   };
 
   const handleChoose = id => {
-    const findMenu = data.find(e => {
-      if (e.id === id) {
+    const findMenu = store.find(e => {
+      if (e.key === id.key) {
         return e;
       }
     });
     const dataWQty = {
       ...findMenu,
-      qty: 2,
+      jumlah: 1,
     };
     const check = checkdatacart(id);
     if (check === undefined) {
       setDataCart([...dataCart, dataWQty]);
     } else {
-      addQty(id);
+      const itemIndex = dataCart.findIndex(item => item.key === id);
+      addQty(itemIndex);
     }
   };
 
@@ -116,7 +85,7 @@ const KeluaranScreen = () => {
     let newData = [];
     if (searchText !== "") {
       newData = datas.filter(function(item) {
-        const itemData = item.name.toUpperCase();
+        const itemData = item.value.toUpperCase();
         const textData = searchText.toUpperCase();
         return itemData.includes(textData);
       });
@@ -145,7 +114,7 @@ const KeluaranScreen = () => {
       <SearchBar
         placeholder="Masukkan nama barang"
         onChangeText={value => {
-          _searchFilterFunction(value, data);
+          _searchFilterFunction(value, store);
         }}
       />
       <View style={dataSearch.length === 0 ? styles.resNone : styles.resSearch}>
@@ -153,16 +122,16 @@ const KeluaranScreen = () => {
           <TouchableOpacity
             key={i}
             style={styles.cardRes}
-            onPress={() => handleChoose(e.id)}
+            onPress={() => handleChoose(e.key)}
           >
             <Text>
-              {e.name}
+              {e.value}
             </Text>
             <Text>
-              Price: {e.price}
+              Harga: Rp. {money(e.harga)}
             </Text>
             <Text>
-              Qty: {e.qty}
+              Jumlah: {e.jumlah}
             </Text>
           </TouchableOpacity>
         )}
@@ -178,21 +147,24 @@ const KeluaranScreen = () => {
                 <View style={styles.row}>
                   <View>
                     <Text style={styles.nameItem}>
-                      {e.name}
+                      {e.value}
                     </Text>
                   </View>
                   <View style={styles.packQty}>
-                    <TouchableOpacity style={styles.btnDec}>
+                    <TouchableOpacity
+                      style={styles.btnDec}
+                      onPress={() => decQty(i)}
+                    >
                       <Text style={styles.textQty}>-</Text>
                     </TouchableOpacity>
                     <View style={styles.btnDec}>
                       <Text style={styles.textQty}>
-                        {e.qty}
+                        {e.jumlah}
                       </Text>
                     </View>
                     <TouchableOpacity
                       style={styles.btnDec}
-                      onPress={() => addQty(e.id)}
+                      onPress={() => addQty(i)}
                     >
                       <Text style={styles.textQty}>+</Text>
                     </TouchableOpacity>
@@ -200,7 +172,7 @@ const KeluaranScreen = () => {
                 </View>
                 <View>
                   <Text style={styles.price}>{`Rp. ${money(
-                    e.price * e.qty
+                    e.harga * e.jumlah
                   )}`}</Text>
                 </View>
               </View>
