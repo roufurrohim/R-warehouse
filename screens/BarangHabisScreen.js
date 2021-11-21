@@ -1,106 +1,61 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, StatusBar } from "react-native";
 import { windowHeight, windowWidth } from "./../components/Dimentions";
 import SearchBar from "./../components/SearchBar";
 import { AlphabetList } from "react-native-section-alphabet-list";
-
-const data = [
-  {
-    value: "Dunkin' Donuts",
-    key: "85",
-    harga: "9843",
-  },
-  {
-    value: "Soprole",
-    key: "86",
-    harga: "6669",
-  },
-  {
-    value: "Nutella",
-    key: "87",
-    harga: "9916",
-  },
-  {
-    value: "Kinder",
-    key: "88",
-    harga: "7577",
-  },
-  {
-    value: "Subway",
-    key: "89",
-    harga: "6972",
-  },
-  {
-    value: "Vitta Foods",
-    key: "90",
-    harga: "6196",
-  },
-  {
-    value: "KFC",
-    key: "91",
-    harga: "3293",
-  },
-  {
-    value: "Wendy's",
-    key: "92",
-    harga: "3115",
-  },
-  {
-    value: "Burger King",
-    key: "93",
-    harga: "6112",
-  },
-  {
-    value: "Dunkin' Donuts",
-    key: "94",
-    harga: "3532",
-  },
-  {
-    value: "Taco Bell",
-    key: "95",
-    harga: "6180",
-  },
-  {
-    value: "Heinz",
-    key: "96",
-    harga: "3802",
-  },
-  {
-    value: "Wonder Bread",
-    key: "97",
-    harga: "7697",
-  },
-  {
-    value: "Bel Group",
-    key: "98",
-    harga: "4174",
-  },
-  {
-    value: "Andy Capp's fries",
-    key: "99",
-    harga: "4765",
-  },
-  {
-    value: "Dunkin' Donuts",
-    key: "100",
-    harga: "9353",
-  },
-];
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Color from "./../components/Colors";
 
 const BarangHabisScreen = () => {
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [input, setInput] = useState();
   const [isSearch, setIsSearch] = useState(false);
-  const [input, setInput] = useState("");
 
-  useEffect(() => {}, []);
+  const getData = async () => {
+    var databaseJson = [];
+    var database = await AsyncStorage.getItem("Database Catatan Barang");
+    databaseJson = JSON.parse(database);
+    setData(databaseJson);
+    // console.log(databaseJson);
+  };
+
+  const filterData = () => {
+    let hasil = [];
+    data.forEach(item => {
+      if (parseInt(item["jumlah"]) <= parseInt(input)) {
+        hasil.push(item);
+      }
+      // console.log(item["jumlah"]);
+    });
+    setFilteredData(hasil);
+
+    // console.log(hasil);
+  };
+
+  useEffect(
+    () => {
+      filterData();
+    },
+    [input]
+  );
+
+  useEffect(() => {
+    async function fetchData() {
+      getData();
+    }
+    fetchData();
+  }, []);
 
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor={Color.primary} />
       <SearchBar
         placeholder="Minimum jumlah barang"
         keyboardType="number-pad"
-        onChangeText={value => {
-          setInput(value);
-          if (value != "") {
+        onChangeText={val => {
+          setInput(val);
+          if (val != "") {
             setIsSearch(true);
           } else {
             setIsSearch(false);
@@ -124,7 +79,7 @@ const BarangHabisScreen = () => {
           {isSearch
             ? <AlphabetList
                 style={{ height: 580 }}
-                data={data}
+                data={filteredData}
                 indexLetterStyle={{
                   color: "rgba(0,0,0,0)",
                   fontSize: 15,
@@ -134,8 +89,13 @@ const BarangHabisScreen = () => {
                     <Text style={styles.listItemLabel}>
                       {item.value}
                     </Text>
-                    <Text style={styles.listItemLabel}>
-                      {item.harga}
+                    <Text
+                      style={[
+                        styles.listItemLabel,
+                        { width: 50, textAlign: "center" },
+                      ]}
+                    >
+                      {item.jumlah}
                     </Text>
                   </View>}
                 renderCustomSectionHeader={section =>

@@ -1,18 +1,111 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
   TouchableOpacity,
-} from 'react-native';
+} from "react-native";
+import { windowWidth, windowHeight } from "./../components/Dimentions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import Colors from './../components/Colors';
+import Colors from "./../components/Colors";
 
 const MasukanScreen = () => {
   const [form, setForm] = useState({
-    nameItem: '',
+    nameItem: "",
   });
+
+  var data = [
+    {
+      nama: "Dunkin' Donuts",
+      value: "Dunkin' Donuts",
+      key: "1",
+      harga: 5000,
+      jumlah: 14,
+    },
+    {
+      nama: "Soprole",
+      value: "Soprole",
+      key: "2",
+      harga: 6000,
+      jumlah: 3,
+    },
+    {
+      nama: "Nutella",
+      value: "Nutella",
+      key: "3",
+      harga: 4000,
+      jumlah: 1,
+    },
+    {
+      nama: "Kinder",
+      value: "Kinder",
+      key: "4",
+      harga: 3000,
+      jumlah: 10,
+    },
+    {
+      nama: "Subway",
+      value: "Subway",
+      key: "5",
+      harga: 15000,
+      jumlah: 21,
+    },
+    {
+      nama: "Vitta Foods",
+      value: "Vitta Foods",
+      key: "6",
+      harga: 12000,
+      jumlah: 11,
+    },
+    {
+      nama: "KFC",
+      value: "KFC",
+      key: "7",
+      harga: 15000,
+      jumlah: 6,
+    },
+    {
+      nama: "Wendy's",
+      value: "Wendy's",
+      key: "8",
+      harga: 1000,
+      jumlah: 9,
+    },
+    {
+      nama: "Burger King",
+      value: "Burger King",
+      key: "9",
+      harga: 9000,
+      jumlah: 3,
+    },
+  ];
+
+  const tulisData = async () => {
+    try {
+      await AsyncStorage.setItem(
+        "Database Catatan Barang",
+        JSON.stringify(data)
+      );
+    } catch (error) {
+      // Error saving data
+      console.log(error);
+    }
+    console.log("tulis data selesai");
+  };
+
+  const readData = async () => {
+    let data;
+    try {
+      data = await AsyncStorage.getItem("Database Catatan Barang");
+    } catch (error) {
+      // Error saving data
+      console.log(error);
+    }
+    console.log(JSON.parse(data));
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Input Data</Text>
@@ -48,22 +141,26 @@ const MasukanScreen = () => {
           placeholder="Input Name Price"
         />
       </View>
-      <TouchableOpacity style={styles.fixToText}>
+      <TouchableOpacity
+        style={styles.fixToText}
+        onPress={() => {
+          tulisData();
+        }}
+      >
         <Text
           style={styles.btnSave}
           // title="Save"
-          // onPress={() => Alert.alert('Right button pressed')}
         >
           Save
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.btnCancel}>
-        <Text
-          style={styles.textCancel}
-          // onPress={() => Alert.alert('Left button pressed')}
-        >
-          Cancel
-        </Text>
+      <TouchableOpacity
+        style={styles.btnCancel}
+        onPress={() => {
+          readData();
+        }}
+      >
+        <Text style={styles.textCancel}>Cancel</Text>
       </TouchableOpacity>
     </View>
   );
@@ -71,14 +168,14 @@ const MasukanScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     paddingTop: 30,
   },
   text: {
     fontSize: 30,
-    color: 'black',
-    fontWeight: 'bold',
+    color: "black",
+    fontWeight: "bold",
   },
   packName: {
     marginTop: 30,
@@ -90,7 +187,7 @@ const styles = StyleSheet.create({
   },
   labelName: {
     fontSize: 18,
-    color: 'black',
+    color: "black",
   },
   inputName: {
     height: 40,
@@ -102,8 +199,8 @@ const styles = StyleSheet.create({
     width: 300,
     height: 45,
     backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 15,
   },
   btnCancel: {
@@ -112,21 +209,31 @@ const styles = StyleSheet.create({
     height: 45,
     borderWidth: 1,
     borderColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 15,
   },
   btnSave: {
-    display: 'flex',
-    color: 'white',
+    display: "flex",
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   textCancel: {
-    display: 'flex',
+    display: "flex",
     color: Colors.primary,
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+  },
+  saveButton: {
+    width: windowWidth - 50,
+    height: 50,
+    backgroundColor: Colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  saveButtonText: {
+    color: "white",
   },
 });
 
