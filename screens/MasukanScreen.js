@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/jsx-no-duplicate-props */
+/* eslint-disable radix */
+/* eslint-disable eqeqeq */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-shadow */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   Text,
@@ -8,23 +15,23 @@ import {
   StatusBar,
   Alert,
   Keyboard,
-} from "react-native";
-import { windowWidth, windowHeight } from "./../components/Dimentions";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Color from "./../components/Colors";
-import InputForm from "./../components/InputForm";
-import ButtonForm from "./../components/ButtonForm";
+} from 'react-native';
+import {windowWidth, windowHeight} from './../components/Dimentions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Color from './../components/Colors';
+import InputForm from './../components/InputForm';
+import ButtonForm from './../components/ButtonForm';
 
 const MasukanScreen = () => {
-  const [warning, setWarning] = useState("Harus Memasukkan Nama Barang");
+  const [warning, setWarning] = useState('Harus Memasukkan Nama Barang');
   const [status, setStatus] = useState(false);
   const [dataSearch, setDataSearch] = useState([]);
   const [form, setForm] = useState({
-    key: "",
-    value: "",
-    tipe: "",
-    jumlah: "",
-    harga: "",
+    key: '',
+    value: '',
+    tipe: '',
+    jumlah: '',
+    harga: '',
   });
   const [semuaData, setSemuaData] = useState([]);
   const [isDataBaru, setIsDataBaru] = useState(true);
@@ -32,15 +39,15 @@ const MasukanScreen = () => {
 
   const alertModal = (title, message) =>
     Alert.alert(title, message, [
-      { text: "OK", onPress: () => console.log("OK Pressed") },
+      {text: 'OK', onPress: () => console.log('OK Pressed')},
     ]);
 
   const validation = () => {
     if (
-      form.value != "" &&
-      form.tipe != "" &&
-      form.jumlah != "" &&
-      form.harga != ""
+      form.value != '' &&
+      form.tipe != '' &&
+      form.jumlah != '' &&
+      form.harga != ''
     ) {
       return true;
     } else {
@@ -50,13 +57,13 @@ const MasukanScreen = () => {
 
   const clearData = async () => {
     try {
-      var counter = await AsyncStorage.getItem("Counter");
+      var counter = await AsyncStorage.getItem('Counter');
       var nullData = {
         key: counter,
-        value: "",
-        tipe: "",
-        jumlah: "",
-        harga: "",
+        value: '',
+        tipe: '',
+        jumlah: '',
+        harga: '',
       };
     } catch (e) {
       console.log(e);
@@ -67,30 +74,29 @@ const MasukanScreen = () => {
 
   const writeData = async () => {
     await AsyncStorage.setItem(
-      "Database Catatan Barang",
-      JSON.stringify(semuaData)
+      'Database Catatan Barang',
+      JSON.stringify(semuaData),
     );
-    console.log("sampai write data");
+    console.log('sampai write data');
   };
 
   const counter = async () => {
-    var counter = parseInt(form["key"]) + 1;
-    await AsyncStorage.setItem("Counter", counter.toString());
+    var counter = parseInt(form.key) + 1;
+    await AsyncStorage.setItem('Counter', counter.toString());
   };
 
   const updateData = () => {
     // ganti data
-    var indexKe = parseInt(form["key"]) - 1;
+    var indexKe = parseInt(form.key) - 1;
     // kirim database
     var data = semuaData;
-    var jumlah =
-      parseInt(semuaData[indexKe]["jumlah"]) + parseInt(form["jumlah"]);
+    var jumlah = parseInt(semuaData[indexKe].jumlah) + parseInt(form.jumlah);
     data[indexKe] = {
-      key: form["key"],
-      value: form["value"],
-      tipe: form["tipe"],
+      key: form.key,
+      value: form.value,
+      tipe: form.tipe,
       jumlah: jumlah.toString(),
-      harga: form["harga"],
+      harga: form.harga,
     };
 
     setSemuaData(data);
@@ -107,19 +113,19 @@ const MasukanScreen = () => {
         updateData();
       }
 
-      alertModal("", "Input Data berhasil");
+      alertModal('', 'Input Data berhasil');
       clearData();
     } else {
-      alertModal("", "Mohon Masukkan Data Secara Lengkap");
+      alertModal('', 'Mohon Masukkan Data Secara Lengkap');
     }
   };
 
   const changeName = (searchText, datas) => {
-    setForm({ ...form, value: searchText });
+    setForm({...form, value: searchText});
 
     let newData = [];
-    if (searchText !== "") {
-      newData = datas.filter(function(item) {
+    if (searchText !== '') {
+      newData = datas.filter(function (item) {
         const itemData = item.value.toUpperCase();
         const textData = searchText.toUpperCase();
         return itemData.includes(textData);
@@ -137,7 +143,7 @@ const MasukanScreen = () => {
       key: item.key,
       value: item.value,
       tipe: item.tipe,
-      jumlah: "",
+      jumlah: '',
       harga: item.harga,
     });
     setStatus(false);
@@ -146,7 +152,7 @@ const MasukanScreen = () => {
 
   const readData = async () => {
     try {
-      var data = await AsyncStorage.getItem("Database Catatan Barang");
+      var data = await AsyncStorage.getItem('Database Catatan Barang');
     } catch (error) {
       // Error saving data
       console.log(error);
@@ -154,23 +160,20 @@ const MasukanScreen = () => {
     setSemuaData(JSON.parse(data));
   };
 
-  useEffect(
-    () => {
-      if (notInitialRender.current) {
-        writeData();
-      } else {
-        notInitialRender.current = true;
-      }
-    },
-    [semuaData]
-  );
+  useEffect(() => {
+    if (notInitialRender.current) {
+      writeData();
+    } else {
+      notInitialRender.current = true;
+    }
+  }, [semuaData]);
 
   useEffect(() => {
     async function fetchData() {
       // ambil data counter
       try {
-        var counter = await AsyncStorage.getItem("Counter");
-        setForm({ ...form, key: counter });
+        var counter = await AsyncStorage.getItem('Counter');
+        setForm({...form, key: counter});
       } catch (e) {
         console.log(e);
       }
@@ -193,51 +196,42 @@ const MasukanScreen = () => {
           value={form.value}
           onChangeText={event => changeName(event, semuaData)}
         />
-        <Text style={styles.wrn}>
-          {form.value !== "" ? "" : `*${warning}`}
-        </Text>
+        <Text style={styles.wrn}>{form.value !== '' ? '' : `*${warning}`}</Text>
         <View style={!status ? styles.resNone : styles.resSearch}>
-          {dataSearch.map((e, i) =>
+          {dataSearch.map((e, i) => (
             <TouchableOpacity
               key={i}
               style={styles.cardRes}
-              onPress={() => handleChoose(e)}
-            >
-              <Text>
-                {e.value}
-              </Text>
-              <Text>
-                Harga: {e.harga}
-              </Text>
-              <Text>
-                Sisa: {e.jumlah}
-              </Text>
+              onPress={() => handleChoose(e)}>
+              <Text>{e.value}</Text>
+              <Text>Harga: {e.harga}</Text>
+              <Text>Sisa: {e.jumlah}</Text>
             </TouchableOpacity>
-          )}
+          ))}
         </View>
         <InputForm
           label="Tipe Barang:"
-          value={form["tipe"]}
+          value={form.tipe}
           placeholder="Masukkan Tipe Barang"
           value={form.tipe}
-          onChangeText={value => setForm({ ...form, tipe: value })}
+          onChangeText={value => setForm({...form, tipe: value})}
         />
         <InputForm
           label="Jumlah Barang:"
           placeholder="Masukkan Jumlah Per Karton"
           value={form.jumlah}
-          onChangeText={value => setForm({ ...form, jumlah: value })}
+          onChangeText={value => setForm({...form, jumlah: value})}
           keyboardType="numeric"
         />
         <InputForm
           label="Harga Barang:"
           placeholder="Masukkan Harga Per Karton"
           value={form.harga}
-          onChangeText={value => setForm({ ...form, harga: value })}
+          onChangeText={value => setForm({...form, harga: value})}
           keyboardType="numeric"
         />
 
-        <View style={{ height: 15 }} />
+        <View style={{height: 15}} />
 
         <ButtonForm
           label="Simpan"
@@ -258,38 +252,38 @@ const MasukanScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingTop: 30,
   },
   resNone: {
-    display: "none",
+    display: 'none',
   },
   resSearch: {
-    display: "flex",
-    width: "94.8%",
-    height: "auto",
-    position: "absolute",
+    display: 'flex',
+    width: '94.8%',
+    height: 'auto',
+    position: 'absolute',
     marginTop: 195,
     zIndex: 1,
     padding: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
   cardRes: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
     marginVertical: 8,
   },
   text: {
     fontSize: 30,
-    color: "black",
-    fontWeight: "bold",
-    textAlign: "center",
+    color: 'black',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   wrn: {
-    color: "red",
+    color: 'red',
     marginLeft: 15,
   },
 });

@@ -1,15 +1,14 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput } from "react-native";
-import Color from "./../components/Colors";
-import { windowWidth, windowHeight } from "./../components/Dimentions";
+/* eslint-disable no-unused-vars */
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, TextInput} from 'react-native';
+import Color from './../components/Colors';
+import {windowWidth, windowHeight} from './../components/Dimentions';
 
-const InputForm = ({ label, ...rest }) => {
+const InputForm = ({label, ...rest}) => {
   const [isFocused, setIsFocused] = useState(false);
   return (
     <View style={styles.inputContainer}>
-      <Text style={styles.labelText}>
-        {label}
-      </Text>
+      <Text style={styles.labelText}>{label}</Text>
       <TextInput
         style={[isFocused ? styles.inputFocused : styles.inputUnfocused]}
         onFocus={() => setIsFocused(true)}
@@ -26,11 +25,11 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginTop: 15,
     marginBottom: 15,
-    alignItems: "center",
+    alignItems: 'center',
   },
   labelText: {
     fontSize: 18,
-    color: "black",
+    color: 'black',
     width: windowWidth - 75,
   },
   inputUnfocused: {
@@ -38,7 +37,7 @@ const styles = StyleSheet.create({
     // width: 320,
     width: windowWidth - 75,
     borderBottomWidth: 1,
-    borderColor: "#999",
+    borderColor: '#999',
   },
   inputFocused: {
     height: 40,
