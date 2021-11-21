@@ -154,14 +154,6 @@ const KeluaranScreen = () => {
   };
 
   const bayar = () => {
-    // const newItem = [...store];
-    // const dataDb = store.map(e => {
-    //   const ind = dataCart.findIndex(item => e.key === item.key);
-    //   return ind;
-    // });
-
-    // newItem[dataDb].jumlah = newItem[dataDb].jumlah - dataCart[dataDb].jumlah;
-    // console.log(newItem);
     dataCart.forEach(item => {
       updateData(item["key"], item["jumlah"]);
     });

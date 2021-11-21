@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,6 +11,7 @@ import {
 import { windowWidth, windowHeight } from "./../components/Dimentions";
 import Color from "./../components/Colors";
 import Icon, { Icons } from "./../components/Icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen = () => {
   return (

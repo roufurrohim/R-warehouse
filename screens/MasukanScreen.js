@@ -169,8 +169,6 @@ const MasukanScreen = () => {
     async function fetchData() {
       // ambil data counter
       try {
-        // await AsyncStorage.setItem("Database Catatan Barang", "[]");
-        // await AsyncStorage.setItem("Counter", "1");
         var counter = await AsyncStorage.getItem("Counter");
         setForm({ ...form, key: counter });
       } catch (e) {

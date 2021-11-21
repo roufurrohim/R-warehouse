@@ -1,15 +1,16 @@
-import React from 'react';
-import {View, StyleSheet, TextInput} from 'react-native';
-import Icon, {Icons} from './../components/Icons';
-import Color from './../components/Colors';
+import React from "react";
+import { View, StyleSheet, TextInput } from "react-native";
+import Icon, { Icons } from "./../components/Icons";
+import Color from "./../components/Colors";
+import { windowWidth } from "./../components/Dimentions";
 
-const SearchBar = ({...rest}) => {
+const SearchBar = ({ ...rest }) => {
   return (
     <View style={styles.searchBarContainer}>
       <View style={styles.searchBar}>
         <Icon
           type={Icons.Feather}
-          name={'search'}
+          name={"search"}
           color={Color.primary}
           style={styles.searchIcon}
         />
@@ -23,23 +24,23 @@ export default SearchBar;
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   searchBarContainer: {
     height: 80,
-    width: '100%',
+    width: "100%",
     backgroundColor: Color.primary,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 10,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
   },
   searchBar: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: Color.white,
     borderRadius: 15,
     paddingHorizontal: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   searchIcon: {
     marginRight: 10,
